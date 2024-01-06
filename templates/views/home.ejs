@@ -11,11 +11,11 @@
     <section id="gpt-clone-wrapper">
       <h1 class="header">chat gpt clone</h1>
       <div class="gpt-form">
-        <form id="gpt-form" method="post">
-          <label for="user-input">enter your prompt:</label>
+        <form id="gpt-form" action="/gpt-form" method="post" enctype="multipart/form-data">
+          <label for="userInput">enter your prompt:</label>
           <textarea
-            name="user-input"
-            id="user-input"
+            name="userInput"
+            id="userInput"
             cols="1"
             rows="10"
           ></textarea>
