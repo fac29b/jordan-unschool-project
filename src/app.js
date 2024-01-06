@@ -11,10 +11,10 @@ app.set("views", path.join(viewsPath));
 
 app.use("/public", express.static(public));
 
+const gptHandler = require('./routes/gptHandler')
+
 //routes
-app.get("/", (req, res) => {
-  res.render("home");
-});
+app.use(gptHandler);
 
 app.listen(server_port, () => {
   console.log(`App running at port ${server_port}`);

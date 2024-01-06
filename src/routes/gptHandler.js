@@ -1,3 +1,8 @@
-const gptHandler = (req, res) => {};
+const express = require('express')
+const router = new express.Router();
 
-module.exports = { gptHandler };
+router.get('/', (req, res) => {
+    res.render('home');
+})
+
+module.exports = router;
