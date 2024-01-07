@@ -1,7 +1,7 @@
 const gptForm = document.getElementById("gpt-form");
 
 gptForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+  // e.preventDefault();
   //input collection and validation
   const inputField = new FormData(gptForm);
   const inputValue =
