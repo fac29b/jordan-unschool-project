@@ -5,8 +5,8 @@ gptForm.addEventListener("submit", (e) => {
   //input collection and validation
   const inputField = new FormData(gptForm);
   const inputValue =
-    inputField.get("user-input") === undefined ||
-    inputField.get("user-input").length === 0
+    inputField.get("userInput") === undefined ||
+    inputField.get("userInput").length === 0
       ? ""
-      : inputField.get("user-input");
+      : inputField.get("userInput");
 });
