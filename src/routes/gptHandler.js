@@ -1,22 +1,73 @@
 const express = require("express");
-const multer = require('multer')
 const router = new express.Router();
+const { OpenAI } = require("openai");
+// const fetch = require("node-fetch");
+const multer = require("multer");
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_KEY,
+});
 
 router.get("/gpt-form", (req, res) => {
   res.render("home");
 });
 
-router.post("/gpt-form", multer().none(), (req, res, next) => {
-    //receieve and parse incoming request data
-    if(!req.body.userInput|| req.body.userInput.length === 0) {
-        res.status(404).send('Cannot Post Data');
-        next();
-    }
-    //send fetch request to openAI
+//preferred syntax
+router.post("/gpt-form", multer().none(), async (req, res, next) => {
+  if (req.body.userInput === undefined && req.body.userInput.length === 0) {
+    res.status(404).send("Cannot Post Data");
+    return;
+  }
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      // prompt: 'Your name HelpBot, you are going to respond to incoming messages revolved aorund the context of the message.',
+      messages: [{role: 'user', content: req.body.userInput}],
+      temperature: 0.5,
+      max_tokens: 2048
+    });
+    return res.status(200).json({
+      message: response.choices[0].message.content,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 
-    //error handle the promise
-
-    //render the page with new data
+  //receieve and parse incoming request data
+  // console.log(!req.body.userInput || req.body.userInput.length !== 0);
+  // if (req.body.userInput === undefined && req.body.userInput.length === 0) {
+  //   res.status(404).send("Cannot Post Data");
+  //   return;
+  // }
+  // //send fetch request to openAI
+  // try {
+  //   const response = await fetch(
+  //     "https://api.openai.com/v1/chat/completions",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${process.env.OPENAI_KEY}`,
+  //       },
+  //       body: JSON.stringify({
+  //         model: "gpt-3.5-turbo",
+  //         messages: [{role: 'user', content: req.body.userInput}],
+  //         temperature: 0.5,
+  //         max_tokens: 2048
+  //       }),
+  //     }
+  //   );
+  //   //error handle the promise
+  //   if (!response.ok) {
+  //     throw new Error(`Error: ${response.status}`);
+  //   }
+  //   //render the page with new data
+  //   const data = await response.json();
+  //   return res.status(200).json(data.choices[0].message.content);
+  //   //catch any internal server/networking errors
+  // } catch (err) {
+  //   res.status(500).json({ message: err.message });
+  // }
 });
 
 module.exports = router;
