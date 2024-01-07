@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const path = require("path");
 const server_port = process.env.PORT || 3001;
@@ -19,7 +20,7 @@ app.use(bodyParser.json())
 
 const gptHandler = require('./routes/gptHandler')
 
-//routes
+//register routes
 app.use(gptHandler);
 
 app.listen(server_port, () => {
