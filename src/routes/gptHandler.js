@@ -15,22 +15,25 @@ router.get("/gpt-form", (req, res) => {
 //preferred syntax
 router.post("/gpt-form", multer().none(), async (req, res, next) => {
   if (req.body.userInput === undefined && req.body.userInput.length === 0) {
-    res.status(404).send("Cannot Post Data");
+    res.status(404).json({ message: "Cannot Post Data" });
     return;
   }
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      // prompt: 'Your name HelpBot, you are going to respond to incoming messages revolved aorund the context of the message.',
-      messages: [{role: 'user', content: req.body.userInput}],
+      messages: [{ role: "user", content: req.body.userInput }],
       temperature: 0.5,
-      max_tokens: 2048
+      max_tokens: 2048,
     });
-    return res.status(200).json({
-      message: response.choices[0].message.content,
-    });
+    let data = [
+      {
+        message: response.choices[0].message.content,
+        role: response.choices[0].message.role,
+      },
+    ];
+    return res.status(200).render("home", { data });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 
   //receieve and parse incoming request data
