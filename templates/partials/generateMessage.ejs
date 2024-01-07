@@ -1,0 +1,9 @@
+<% data.forEach((messages) => { %>
+<li>
+  <div class="user-message">
+    <!-- render icon depending on user -->
+    <i class="fa-solid fa-robot"></i>
+    <p><%= messages.message %></p>
+  </div>
+</li>
+<% }) %>
