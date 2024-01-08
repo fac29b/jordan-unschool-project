@@ -9,29 +9,32 @@ const openai = new OpenAI({
 });
 
 router.get("/gpt-form", (req, res) => {
-  res.render("home");
+  res.render("home", { data: [] });
 });
 
 //preferred syntax
 router.post("/gpt-form", multer().none(), async (req, res, next) => {
-  if (req.body.userInput === undefined && req.body.userInput.length === 0) {
-    res.status(404).json({ message: "Cannot Post Data" });
+  const { userInput } = req.body;
+  if (userInput === undefined || userInput.length === 0) {
+    res.status(404).json("Cannot Post Data");
     return;
   }
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: req.body.userInput }],
+      messages: [{ role: "user", content: userInput }],
       temperature: 0.5,
       max_tokens: 2048,
     });
+    const { role, content } = response.choices[0].message;
     let data = [
       {
-        message: response.choices[0].message.content,
-        role: response.choices[0].message.role,
+        role: role,
+        message: content,
       },
     ];
-    return res.status(200).render("home", { data });
+
+    return res.status(200).render("home", { data: data });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
